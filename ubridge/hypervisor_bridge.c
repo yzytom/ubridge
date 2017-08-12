@@ -34,8 +34,8 @@
 
 static bridge_t *find_bridge(char *bridge_name)
 {
-   bridge_t *bridge;
-   bridge_t *next;
+   volatile bridge_t *bridge;
+   volatile bridge_t *next;
 
    bridge = bridge_list;
    while (bridge != NULL) {
@@ -50,7 +50,7 @@ static bridge_t *find_bridge(char *bridge_name)
 static int cmd_create_bridge(hypervisor_conn_t *conn, int argc, char *argv[])
 {
    bridge_t *new_bridge;
-   bridge_t **head;
+   volatile bridge_t **head;
 
    if (find_bridge(argv[0]) != NULL) {
       hypervisor_send_reply(conn, HSC_ERR_CREATE, 1, "bridge '%s' already exist", argv[0]);
@@ -76,9 +76,9 @@ static int cmd_create_bridge(hypervisor_conn_t *conn, int argc, char *argv[])
 
 static int cmd_delete_bridge(hypervisor_conn_t *conn, int argc, char *argv[])
 {
-    bridge_t **head;
-    bridge_t *bridge;
-    bridge_t *prev = NULL;
+	volatile bridge_t **head;
+	volatile bridge_t *bridge;
+	volatile bridge_t *prev = NULL;
 
     head = &bridge_list;
     for (bridge = *head; bridge != NULL; prev = bridge, bridge = bridge->next) {
@@ -90,9 +90,7 @@ static int cmd_delete_bridge(hypervisor_conn_t *conn, int argc, char *argv[])
 
           if (bridge->running) {
 			  TerminateThread(bridge->source_tid, 0);
-			  WaitForSingleObject(bridge->source_tid, INFINITE);
 			  TerminateThread(bridge->destination_tid, 0);
-			  WaitForSingleObject(bridge->destination_tid, INFINITE);
           }
           if (bridge->name)
              free(bridge->name);
@@ -112,7 +110,6 @@ static int cmd_delete_bridge(hypervisor_conn_t *conn, int argc, char *argv[])
 static int cmd_start_bridge(hypervisor_conn_t *conn, int argc, char *argv[])
 {
    bridge_t *bridge;
-   int s;
 
    bridge = find_bridge(argv[0]);
    if (bridge == NULL) {
@@ -129,16 +126,16 @@ static int cmd_start_bridge(hypervisor_conn_t *conn, int argc, char *argv[])
       hypervisor_send_reply(conn, HSC_ERR_START, 1, "bridge '%s' must have 2 NIOs to be started", argv[0]);
       return (-1);
    }
-   bridge->source_tid = CreateThread(NULL, 0, &source_nio_listener, bridge, 0, NULL);
+   bridge->source_tid = CreateThread(NULL, 0, source_nio_listener, bridge, 0, NULL);
    if (bridge->source_tid == 0) {
-      handle_error_en(GetLastError(), "pthread_create");
+      handle_error_en(GetLastError(), "source_nio_thread_create");
       hypervisor_send_reply(conn, HSC_ERR_START, 1, "cannot create source NIO thread for bridge '%s'", argv[0]);
       return (-1);
    }
 
-   bridge->destination_tid = CreateThread(NULL, 0, &destination_nio_listener, bridge, 0, NULL);
+   bridge->destination_tid = CreateThread(NULL, 0, destination_nio_listener, bridge, 0, NULL);
    if (bridge->destination_tid == 0) {
-      handle_error_en(GetLastError(), "pthread_create");
+      handle_error_en(GetLastError(), "destination_nio_thread_create");
       hypervisor_send_reply(conn, HSC_ERR_START, 1, "cannot create destination NIO thread for bridge '%s'", argv[0]);
       return (-1);
    }
@@ -164,13 +161,10 @@ static int cmd_stop_bridge(hypervisor_conn_t *conn, int argc, char *argv[])
    }
 
    bridge->running = FALSE;
-   /*
-   pthread_cancel(bridge->source_tid);
-   pthread_join(bridge->source_tid, NULL);
-   pthread_cancel(bridge->destination_tid);
-   pthread_join(bridge->destination_tid, NULL);
-   bridge->running = FALSE;
-   */
+
+   kill_thread(bridge->source_tid);
+   kill_thread(bridge->destination_tid);
+
    hypervisor_send_reply(conn, HSC_INFO_OK, 1, "bridge '%s' stopped", argv[0]);
    return (0);
 }
@@ -178,7 +172,7 @@ static int cmd_stop_bridge(hypervisor_conn_t *conn, int argc, char *argv[])
 static int cmd_rename_bridge(hypervisor_conn_t *conn, int argc, char *argv[])
 {
    bridge_t *bridge;
-   char *newname;
+   char *newname = (char*)malloc(strlen(argv[1]));
 
    bridge = find_bridge(argv[0]);
    if (bridge == NULL) {
@@ -205,8 +199,8 @@ static int cmd_rename_bridge(hypervisor_conn_t *conn, int argc, char *argv[])
 
 static int cmd_list_bridges(hypervisor_conn_t *conn, int argc, char *argv[])
 {
-   bridge_t *bridge;
-   bridge_t *next;
+   volatile bridge_t *bridge;
+   volatile bridge_t *next;
    int nios;
 
    bridge = bridge_list;
@@ -391,28 +385,6 @@ static int cmd_delete_nio_udp(hypervisor_conn_t *conn, int argc, char *argv[])
    return (-1);
 }
 
-static int cmd_add_nio_unix(hypervisor_conn_t *conn, int argc, char *argv[])
-{
-	nio_t *nio = {0};
-   bridge_t *bridge;
-
-   bridge = find_bridge(argv[0]);
-   if (bridge == NULL) {
-      hypervisor_send_reply(conn, HSC_ERR_NOT_FOUND, 1, "bridge '%s' doesn't exist", argv[0]);
-      return (-1);
-   }
-
-   if (add_nio_to_bridge(conn, bridge, nio) == -1) {
-     free_nio(nio);
-     return (-1);
-   }
-
-   add_nio_desc(nio, "%s -> %s", argv[1], argv[2]);
-
-   hypervisor_send_reply(conn, HSC_INFO_OK,1, "NIO UNIX added to bridge '%s'", argv[0]);
-   return (0);
-}
-
 static int cmd_add_nio_ethernet(hypervisor_conn_t *conn, int argc, char *argv[])
 {
    nio_t *nio;
@@ -470,7 +442,7 @@ static int cmd_start_capture_bridge(hypervisor_conn_t *conn, int argc, char *arg
 
 static int cmd_stop_capture_bridge(hypervisor_conn_t *conn, int argc, char *argv[])
 {
-   bridge_t *bridge;
+	bridge_t *bridge;
 
    bridge = find_bridge(argv[0]);
    if (bridge == NULL) {
@@ -491,7 +463,7 @@ static int cmd_stop_capture_bridge(hypervisor_conn_t *conn, int argc, char *argv
 
 static int cmd_add_packet_filter(hypervisor_conn_t *conn, int argc, char *argv[])
 {
-   bridge_t *bridge;
+	bridge_t *bridge;
    int res;
 
    bridge = find_bridge(argv[0]);
@@ -510,7 +482,7 @@ static int cmd_add_packet_filter(hypervisor_conn_t *conn, int argc, char *argv[]
 
 static int cmd_delete_packet_filter(hypervisor_conn_t *conn, int argc, char *argv[])
 {
-   bridge_t *bridge;
+	bridge_t *bridge;
    int res;
 
    bridge = find_bridge(argv[0]);
@@ -529,7 +501,7 @@ static int cmd_delete_packet_filter(hypervisor_conn_t *conn, int argc, char *arg
 
 static int cmd_reset_packet_filters(hypervisor_conn_t *conn, int argc, char *argv[])
 {
-   bridge_t *bridge;
+	bridge_t *bridge;
 
    bridge = find_bridge(argv[0]);
    if (bridge == NULL) {

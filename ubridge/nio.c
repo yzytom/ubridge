@@ -92,7 +92,8 @@ SSIZE_T nio_recv(nio_t *nio, void *pkt, SSIZE_T max_len)
 
 void dump_packet(FILE *f_output, u_char *pkt, SSIZE_T len)
 {
-	SSIZE_T x, i = 0, tmp;
+	SSIZE_T x, tmp;
+	unsigned int i = 0;
 
    while (i < len)
    {

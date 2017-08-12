@@ -30,7 +30,7 @@
 /* Frequency Dropping                                                       */
 /* ======================================================================== */
 int random() {
-	srand(rand() % 1000000 + log(pow(time(0) % 73, time(0) % 6)));
+	srand(rand() % 1000000 + (int)log(pow((double)(time(0) % 73), (double)(time(0) % 6))));
 	return rand();
 }
 struct frequency_drop_data {
@@ -278,7 +278,7 @@ static int corrupt_handler(void *pkt, int len, void *opt)
 
    if (data != NULL && random() % 100 <= data->percentage) {
       length = len / 4;
-      corrupt_packet((int)pkt + len / 2 - length / 2 + 1, length, opt);
+      corrupt_packet((char*)((int)pkt + len / 2 - length / 2 + 1), length, opt);
    }
    return (FILTER_ACTION_PASS);
 }

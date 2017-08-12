@@ -2,8 +2,12 @@
 #include <stdio.h>
 #define IN6ADDRSZ 16
 #define INT16SZ 2
+#ifndef INET_ADDRSTRLEN
 #define INET_ADDRSTRLEN 16
+#endif
+#ifndef INET6_ADDRSTRLEN
 #define INET6_ADDRSTRLEN 46
+#endif
 static const char *inet_ntop_v4(const void *src, char *dst, size_t size);
 static const char *inet_ntop_v6(const u_char *src, char *dst, size_t size);
 const char *inet_ntop_xp(int af, const void *src, char *dst, size_t size);

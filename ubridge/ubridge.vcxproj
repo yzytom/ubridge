@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -36,7 +36,6 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141_xp</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -49,7 +48,6 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -71,91 +69,79 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\happy\Documents\Visual Studio 2017\Projects\ubridge\ubridge\npcap-sdk-0.1\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\happy\Documents\Visual Studio 2017\Projects\pthread-win32-master\bin\Win32_MSVC2015.Release;C:\Users\happy\Documents\Visual Studio 2017\Projects\ubridge\ubridge\npcap-sdk-0.1\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\ubridge\npcap-sdk-0.1\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\ubridge\npcap-sdk-0.1\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\happy\Documents\Visual Studio 2017\Projects\ubridge\ubridge\npcap-sdk-0.1\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\happy\Documents\Visual Studio 2017\Projects\ubridge\ubridge\npcap-sdk-0.1\Lib\x64;C:\Users\happy\Documents\Visual Studio 2017\Projects\pthread-win32-master\bin\x64_MSVC2015.Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\ubridge\npcap-sdk-0.1\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\ubridge\npcap-sdk-0.1\Lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\happy\Documents\Visual Studio 2017\Projects\ubridge\ubridge\npcap-sdk-0.1\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\happy\Documents\Visual Studio 2017\Projects\ubridge\ubridge\npcap-sdk-0.1\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\ubridge\npcap-sdk-0.1\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\ubridge\npcap-sdk-0.1\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\happy\Documents\Visual Studio 2017\Projects\ubridge\ubridge\npcap-sdk-0.1\Include;C:\Users\happy\Documents\Visual Studio 2017\Projects\pthread-win32-master;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\happy\Documents\Visual Studio 2017\Projects\ubridge\ubridge\npcap-sdk-0.1\Lib\x64;C:\Users\happy\Documents\Visual Studio 2017\Projects\pthread-win32-master\bin\x64_MSVC2015.Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\ubridge\npcap-sdk-0.1\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\ubridge\npcap-sdk-0.1\Lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>Packet.lib;wpcap.lib;pthread_dll.lib;pthread_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>wpcap.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>wpcap.dll;ws2_32.dll</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>wpcap.lib;Packet.lib;pthread_dll.lib;pthread_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>wpcap.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>wpcap.dll;ws2_32.dll</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <Optimization>Full</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MinimalRebuild>true</MinimalRebuild>
-      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Packet.lib;wpcap.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wpcap.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>wpcap.dll;ws2_32.dll</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <Optimization>Full</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MinimalRebuild>true</MinimalRebuild>
-      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Packet.lib;wpcap.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wpcap.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>wpcap.dll;ws2_32.dll</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -171,8 +157,6 @@
     <ClInclude Include="parse.h" />
     <ClInclude Include="pcap_capture.h" />
     <ClInclude Include="pcap_filter.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="resource1.h" />
     <ClInclude Include="ubridge.h" />
   </ItemGroup>
   <ItemGroup>

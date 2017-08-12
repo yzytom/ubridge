@@ -25,10 +25,9 @@
 #include "ubridge.h"
 #include "nio_udp.h"
 #include <winsock2.h>
-#pragma comment(lib, "Ws2_32.lib")
-//#ifndef inet_ntop
+
 #include "inet_ntop.h"
-//#endif
+
 #define HOST_NAME_MAX 64
 
 static int udp_connect(int local_port, char *remote_host, int remote_port)
@@ -92,11 +91,9 @@ static int udp_connect(int local_port, char *remote_host, int remote_port)
          continue;
      }
 
-      setsockopt(sck, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
-	  //if(inet_ntop)
-		//inet_ntop(res->ai_family, ptr, hostname, HOST_NAME_MAX);
-	  //else
-		inet_ntop_xp(res->ai_family, ptr, hostname, HOST_NAME_MAX);
+	   setsockopt(sck, SOL_SOCKET, SO_REUSEADDR, (char*)&yes, sizeof(yes));
+	  inet_ntop_xp(res->ai_family, ptr, hostname, HOST_NAME_MAX);
+
       printf("UDP tunnel connecting from local port %d to IPv%d addresss %s on port %d\n",
       local_port, res->ai_family == PF_INET6 ? 6 : 4, hostname, remote_port);
 

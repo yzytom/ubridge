@@ -126,10 +126,9 @@ int parse_config(char *filename, bridge_t **bridges)
     }
     nsec = iniparser_getnsec(ubridge_config);
     for (i = 0; i < nsec; i++) {
-        bridge_t *bridge;
+		bridge_t *bridge;
         nio_t *source_nio = NULL;
         nio_t *destination_nio = NULL;
-		GetPrivateProfileSectionA;
         bridge_name = iniparser_getsecname(ubridge_config, i);
         printf("Parsing %s\n", bridge_name);
         if (getstr(ubridge_config, bridge_name, "source_udp", &value))

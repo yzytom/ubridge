@@ -52,31 +52,33 @@ typedef struct {
 typedef struct {
 	pcap_t *fd;
 	pcap_dumper_t *dumper;
-	intptr_t lock;
+	HANDLE lock;
 } pcap_capture_t;
 
 typedef struct bridge {
 	char *name;
 	int running;
-	intptr_t source_tid;
-	intptr_t destination_tid;
+	HANDLE source_tid;
+	HANDLE destination_tid;
 	nio_t *source_nio;
 	nio_t *destination_nio;
 	pcap_capture_t *capture;
 	packet_filter_t *packet_filters;
-	struct bridge *next;
+	volatile struct bridge *next;
 } bridge_t;
 
-extern bridge_t *bridge_list;
-extern intptr_t global_lock;
-extern int debug_level;
-BOOL* hypervisor_running;
+volatile bridge_t *bridge_list;
+extern volatile  HANDLE global_lock;
+volatile BOOL* hypervisor_running;
+extern volatile int debug_level;
 
 void ubridge_reset();
-DWORD WINAPI source_nio_listener(void *data);
-DWORD WINAPI destination_nio_listener(void *data);
+DWORD WINAPI source_nio_listener(bridge_t *data);
+DWORD WINAPI destination_nio_listener(bridge_t *data);
 
 #endif /* !UBRIDGE_H_ */
-BOOL WINAPI ConsoleHandler(DWORD CEvent);
+static BOOL WINAPI ConsoleHandler(DWORD CEvent);
 static void display_network_devices(void);
-BOOL WINAPI ConsoleIO(HANDLE handle_in);
+static BOOL WINAPI ConsoleIO(HANDLE handle_in);
+static void changedllpath();
+void kill_thread(HANDLE tid);
