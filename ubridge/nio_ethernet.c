@@ -31,7 +31,10 @@ static pcap_t *nio_ethernet_open(char *device)
 	pcap_t *p;
 
 	/* Timeout is 10ms */
-	if (!(p = pcap_open_live(device, 65535, TRUE, 10, pcap_errbuf)))
+	if (!(p = pcap_open(device, 65535, PCAP_OPENFLAG_PROMISCUOUS |
+		PCAP_OPENFLAG_NOCAPTURE_LOCAL |
+		PCAP_OPENFLAG_MAX_RESPONSIVENESS |
+		PCAP_OPENFLAG_NOCAPTURE_RPCAP,NULL, 10, pcap_errbuf)))
 		goto pcap_error;
 
 	free(pcap_errbuf);

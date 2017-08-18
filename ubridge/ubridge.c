@@ -39,7 +39,7 @@ volatile int debug_level = 0;
 static void bridge_nios(nio_t *rx_nio, nio_t *tx_nio, bridge_t *bridge)
 {
 	SSIZE_T bytes_received, bytes_sent;
-	u_char *pkt = malloc(NIO_MAX_PKT_SIZE * sizeof(u_char));
+	u_char *pkt = malloc(NIO_MAX_PKT_SIZE*sizeof(u_char));
 	int drop_packet;
 
 	while (bridge->running == TRUE) {
@@ -210,7 +210,7 @@ static void display_network_devices(void)
 
 	printf("Network device list:\n\n");
 
-	int res = pcap_findalldevs(&device_list, pcap_errbuf);
+	int res = pcap_findalldevs_ex(PCAP_SRC_IF_STRING, NULL, &device_list, pcap_errbuf);
 
 	if (res < 0) {
 		fprintf(stderr, "PCAP: unable to find device list (%s)\n", pcap_errbuf);
