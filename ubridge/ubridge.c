@@ -70,7 +70,7 @@ static void bridge_nios(nio_t *rx_nio, nio_t *tx_nio, bridge_t *bridge)
 			if (debug_level > 1)
 				dump_packet(stdout, pkt, bytes_received);
 		}
-		
+
 		// filter the packet if there is a filter configured 
 		if (bridge->packet_filters != NULL) {
 			packet_filter_t *filter = bridge->packet_filters;
@@ -387,12 +387,12 @@ static void changedllpath() {
 	lstrcat(legacy_winpcap_library, (LPWSTR)L"\\wpcap.dll");
 	if (_waccess(npcap_wpcap_library, 0) == 0) {
 		SetDllDirectory(npcap_wpcap_path);
-		//printf("using npcap library!\n");
+		printf("using npcap library!\n");
 		return;
 	}
 	if (_waccess(legacy_winpcap_library, 0) == 0) {
 		SetDllDirectory(L"");
-		//printf("using winpcap library!\n");
+		printf("using winpcap library!\n");
 	}
 	else {
 		printf("Can't use npcap and winpcap library!\n");
