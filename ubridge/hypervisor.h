@@ -51,7 +51,7 @@
 #define HSC_ERR_UNSPECIFIED 215  /* unspecified error (generic) */
 
 /* By default, Cygwin supports only 64 FDs with select()! */
-#if defined(CYGWIN) && !defined(FD_SETSIZE)
+#if !defined(FD_SETSIZE)
   #define FD_SETSIZE 1024
 #endif
 
