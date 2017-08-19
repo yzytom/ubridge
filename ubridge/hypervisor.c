@@ -192,6 +192,7 @@ static int cmd_stop(hypervisor_conn_t *conn, int argc, char *argv[])
 {
 	hypervisor_send_reply(conn, HSC_INFO_OK, 1, "OK");
 	hypervisor_stopsig();
+	exit(EXIT_SUCCESS);
 	return (0);
 }
 

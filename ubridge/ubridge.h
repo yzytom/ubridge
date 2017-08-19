@@ -82,3 +82,4 @@ static void display_network_devices(void);
 static BOOL WINAPI ConsoleIO(HANDLE handle_in);
 static void changedllpath();
 void kill_thread(HANDLE tid);
+void free_bridges(volatile bridge_t* bridge);

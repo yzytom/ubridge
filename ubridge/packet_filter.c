@@ -243,7 +243,10 @@ static char patterns[] = {
 static int corrupt_setup(void **opt, int argc, char *argv[])
 {
    struct corrupt_data *data = *opt;
-
+   if (sizeof(opt) / 4 == 2) {
+	   printf("64bit version doesn't support corrupt fillter.\n");
+	   return (-1);
+   }
    if (argc != 1)return (-1);
 
    if (!data) {

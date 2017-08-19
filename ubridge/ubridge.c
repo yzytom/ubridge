@@ -137,9 +137,9 @@ DWORD WINAPI destination_nio_listener(bridge_t *data)
 	return 0;
 }
 
-static void free_bridges(volatile bridge_t* bridge)
+void free_bridges(volatile bridge_t* bridge)
 {
-	volatile bridge_t *next;
+	bridge_t *next;
 	while (bridge != NULL) {
 		bridge->running = FALSE;
 		if (bridge->name)
